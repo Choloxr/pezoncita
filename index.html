@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Para Ti — Una sorpresa</title>
+
+  <!-- Tipografías e íconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+  :root{
+    /* paleta romántica */
+    --bg-1: #0b1020;
+    --bg-2: #2b1430;
+    --rose-1: #ff6b9d;
+    --rose-2: #ffb3c7;
+    --gold: #ffd7b6;
+    --glass: rgba(255,255,255,0.06);
+    --muted: rgba(255,255,255,0.95);
+    --muted-2: rgba(255,255,255,0.85);
+    --radius: 16px;
+    --card-w: 380px; /* optimizado para iPhone 11 */
+    --transition: 240ms cubic-bezier(.2,.9,.2,1);
+  }
+
+  /* reset / base */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:22px;
+    -webkit-font-smoothing:antialiased;
+    touch-action:manipulation;
+
+    /* fondo romántico: gradiente + bokeh sutil */
+    background:
+      radial-gradient(600px 220px at 10% 10%, rgba(255,107,157,0.06), transparent 6%),
+      radial-gradient(300px 140px at 90% 85%, rgba(255,213,182,0.03), transparent 6%),
+      linear-gradient(135deg,var(--bg-1),var(--bg-2));
+    background-attachment: fixed;
+  }
+
+  /* tarjeta principal */
+  .card{
+    width:100%;
+    max-width:var(--card-w);
+    border-radius:calc(var(--radius) + 8px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow:
+      0 20px 50px rgba(10,10,20,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.02),
+      0 2px 10px rgba(255,107,157,0.03);
+    overflow:hidden;
+    position:relative;
+    border: 1px solid rgba(255,255,255,0.06);
+    -webkit-tap-highlight-color: transparent;
+    transform-origin:center;
+    transition: transform 320ms ease;
+  }
+  .card:hover{ transform: translateY(-4px) scale(1.002); }
+
+  /* header con iluminación y corazón pulsante */
+  header{
+    padding:22px 18px 30px 18px;
+    background:
+      linear-gradient(135deg, rgba(255,107,157,0.98), rgba(255,180,195,0.92));
+    color:#fff;
+    text-align:center;
+    position:relative;
+    overflow:visible;
+  }
+  .logo{
+    width:58px;
+    height:58px;
+    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+    display:grid;
+    place-items:center;
+    font-size:22px;
+    margin:0 auto 8px;
+    box-shadow: 0 6px 18px rgba(255,95,137,0.12), inset 0 -6px 18px rgba(255,255,255,0.02);
+  }
+  h1{ font-family:'Playfair Display', serif; margin:8px 0 4px; font-size:22px; letter-spacing:0.2px; text-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+  p.lead{ margin:0; font-size:13px; opacity:0.98; color:var(--muted-2); }
+
+  /* decoración romántica: brillo en header */
+  header:after{
+    content: "";
+    position: absolute;
+    left: -10%;
+    top: -30%;
+    width: 140%;
+    height: 100%;
+    background: radial-gradient(closest-side, rgba(255,223,200,0.12), transparent 35%);
+    transform: rotate(-12deg);
+    pointer-events: none;
+  }
+
+  main{ padding:16px; }
+
+  .intro{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.03);
+    margin-bottom:14px;
+    text-align:center;
+    color:var(--muted-2);
+    box-shadow: 0 6px 18px rgba(15,10,20,0.12);
+  }
+  .intro p{ margin:0; line-height:1.45; font-size:14px; }
+
+  /* grid y tiles con esquinas suaves y destellos dorados */
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+  .tile{
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    border-radius:14px;
+    padding:14px;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.03);
+    display:flex; gap:8px; align-items:center; justify-content:center; flex-direction:column;
+    transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    min-height:92px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .tile:focus{ outline:3px solid rgba(255,200,210,0.12); }
+  .tile:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 22px 46px rgba(30,8,30,0.45), 0 6px 18px rgba(255,107,157,0.06);
+    background: linear-gradient(180deg, rgba(255,107,157,0.02), rgba(255,180,195,0.01));
+  }
+  .tile i{ font-size:24px; color: var(--rose-2); filter: drop-shadow(0 6px 12px rgba(255,102,140,0.12)); }
+  .tile small{ display:block; margin-top:8px; font-size:12px; color:rgba(255,255,255,0.95); }
+
+  /* message box con borde dorado suave */
+  .message-box{
+    margin-top:14px;
+    padding:14px;
+    border-radius:12px;
+    background: linear-gradient(90deg, rgba(255,180,195,0.02), rgba(255,200,210,0.01));
+    border: 1px dashed rgba(255,180,195,0.06);
+    box-shadow: 0 8px 22px rgba(10,8,20,0.08);
+  }
+  .message-text{
+    font-style:italic;
+    font-size:15px;
+    color:#fff;
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px;
+  }
+
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; justify-content:center; }
+  .btn{
+    background: linear-gradient(135deg, var(--rose-1), var(--rose-2));
+    border:none;
+    color:white;
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow: 0 10px 28px rgba(30,6,30,0.36);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .btn:active{ transform: translateY(1px) scale(.997); }
+  .btn.secondary{ background: transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted-2); }
+
+  footer{ padding:14px; text-align:center; font-size:13px; color: rgba(255,255,255,0.8); }
+
+  /* canvas escena */
+  #scene{ position:fixed; inset:0; pointer-events:none; z-index:10; }
+
+  /* corazones sutiles */
+  .little-heart{ position:absolute; opacity:0; transform:translateY(0); animation:floatUp 8s linear infinite; will-change:transform,opacity; text-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+  @keyframes floatUp {
+    0% { transform: translateY(40vh) scale(0.85); opacity:0 }
+    10% { opacity:0.9; transform: translateY(28vh) scale(1) }
+    60% { opacity:0.8 }
+    100% { transform: translateY(-12vh) scale(1.05); opacity:0 }
+  }
+
+  /* flowers (SVG wrapper): brillo y sombra */
+  .flower{
+    position:fixed;
+    width:40px;
+    height:40px;
+    pointer-events:none;
+    z-index:9999;
+    opacity:0;
+    will-change:transform,opacity;
+    transform-origin:center;
+    filter: drop-shadow(0 8px 22px rgba(255,120,150,0.12));
+  }
+
+  /* gallery */
+  .gallery-container{
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(8,10,18,0.94); z-index:100; justify-content:center; align-items:center; flex-direction:column; padding:18px;
+  }
+  .gallery-container[aria-hidden="false"]{ display:flex; }
+  .gallery-image{
+    max-width:100%; max-height:72vh; border-radius:12px; box-shadow:0 18px 50px rgba(2,6,23,0.6);
+    object-fit:contain; transition: transform 0.35s cubic-bezier(.2,.9,.2,1);
+    cursor: zoom-in;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+  .gallery-image.zoomed{ transform: scale(1.6); cursor: zoom-out; z-index:101; }
+
+  .close-gallery{ position:absolute; top:18px; right:18px; background: rgba(255,255,255,0.06); border:none; color:white; width:44px; height:44px; border-radius:50%; font-size:20px; cursor:pointer; display:grid; place-items:center; }
+  .gallery-counter{ color:white; font-size:14px; margin-top:12px; }
+  .gallery-nav{ display:flex; gap:12px; margin-top:12px; }
+
+  /* photo grid + lock UX */
+  .photo-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:16px; }
+  .photo-container{ position:relative; overflow:hidden; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border: 1px solid rgba(255,255,255,0.03); }
+  .photo-thumb{ width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; cursor:pointer; transition: all 0.45s cubic-bezier(.2,.9,.2,1); filter: blur(8px) saturate(.9) brightness(.7); transform: scale(0.96); }
+  .photo-thumb.unlocked{ filter: none; transform: scale(1); box-shadow: 0 12px 28px rgba(6,6,10,0.28); }
+  .photo-thumb.unlocked:hover{ transform: scale(1.04); filter: brightness(1.05); }
+
+  .lock-overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background: linear-gradient(180deg, rgba(15,23,36,0.6), rgba(15,23,36,0.75)); color:white; cursor:pointer;
+  }
+  .lock-overlay i{ font-size:30px; margin-bottom:8px; color: var(--rose-2); filter: drop-shadow(0 8px 18px rgba(255,120,150,0.12)); }
+  .lock-overlay span{ font-size:13px; text-align:center; padding:0 12px; }
+
+  .photo-caption{ position:absolute; bottom:0; left:0; right:0; padding:8px; color:white; font-size:12px; background: linear-gradient(transparent, rgba(0,0,0,0.6)); transform: translateY(100%); transition: transform .28s ease; text-align:center; }
+  .photo-container:hover .photo-caption{ transform: translateY(0); }
+
+  .photo-reactions{ position:absolute; top:8px; right:8px; display:flex; gap:6px; opacity:0; transition: opacity .25s ease; }
+  .photo-container.unlocked:hover .photo-reactions{ opacity:1; }
+
+  .reaction-btn{ background: rgba(255,255,255,0.12); border:none; border-radius:50%; width:34px; height:34px; display:grid; place-items:center; color:white; cursor:pointer; font-size:14px; backdrop-filter: blur(4px); }
+
+  /* unlock visual */
+  .unlock-effect{ position:absolute; inset:0; border-radius:8px; background: radial-gradient(circle at 30% 30%, rgba(255,220,200,0.28), transparent 30%), radial-gradient(circle at 70% 70%, rgba(255,150,190,0.14), transparent 30%); opacity:1; animation: unlockGlow 900ms ease-out forwards; pointer-events:none; }
+  @keyframes unlockGlow { 0%{ transform: scale(0.6); opacity: 0.85 } 100% { transform: scale(1.9); opacity: 0 } }
+
+  /* progress bar */
+  .progress-container{ width:100%; height:8px; background: rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; margin:12px 0; }
+  .progress-bar{ height:100%; background: linear-gradient(90deg, var(--rose-1), var(--gold)); width:0%; transition: width .6s cubic-bezier(.2,.9,.2,1); }
+
+  .progress-text{ text-align:center; font-size:12px; color: rgba(255,255,255,0.85); margin-bottom:6px; }
+
+  /* responsive (iPhone 11 target) */
+  @media (max-width:420px){
+    :root{ --card-w:92vw }
+    h1{ font-size:20px }
+    .tile{ min-height:84px; padding:12px }
+    .message-text{ font-size:14px }
+    .intro p{ font-size:13px }
+    .grid{ gap:8px }
+    .photo-grid{ grid-template-columns: 1fr }
+    .gallery-image.zoomed{ transform: scale(1.4) }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: 0 !important; }
+  }
+</style>
+
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <main class="card" role="region" aria-label="Tarjeta sorpresa">
+    <header>
+      <div class="logo" aria-hidden="true">💌</div>
+      <h1>Para la gatita</h1>
+      <p class="lead">Descubre nuestros recuerdos especiales</p>
+    </header>
+
+    <main>
+      <div class="intro" id="intro">
+        <p>Toca las fotos para desbloquear nuestros momentos especiales</p>
+      </div>
+
+      <div class="progress-text" id="progress-text">0/6 fotos desbloqueadas</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <div class="grid" role="list">
+        <button class="tile" id="tile-type" role="listitem" aria-label="Tipo de mensaje" tabindex="0">
+          <i class="fa-solid fa-keyboard"></i>
+          <small>Mostrar mensaje (hay varios)</small>
+        </button>
+
+        <button class="tile" id="tile-hearts" role="listitem" aria-label="Lluvia de corazones" tabindex="0">
+          <i class="fa-solid fa-heart"></i>
+          <small>Toca acá para corazones</small>
+        </button>
+
+        <button class="tile" id="tile-fireworks" role="listitem" aria-label="Flores" tabindex="0">
+          <i class="fa-solid fa-seedling"></i>
+          <small>Toca acá para flores </small>
+        </button>
+
+        <button class="tile" id="tile-photos" role="listitem" aria-label="Nuestras fotos" tabindex="0">
+          <i class="fa-solid fa-images"></i>
+          <small>Ver galería completa</small>
+        </button>
+      </div>
+
+      <div class="photo-grid">
+        <div class="photo-container" data-index="0">
+          <img src="img/1.jpg" alt="Nuestra foto 1" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Nuestro primer día juntos ❤️</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="0">❤️</button>
+            <button class="reaction-btn" data-photo="0">😍</button>
+          </div>
+        </div>
+        <div class="photo-container" data-index="1">
+          <img src="img/2.jpg" alt="Nuestra foto 2" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Ese día fuimos a la playa 🌊</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="1">❤️</button>
+            <button class="reaction-btn" data-photo="1">😍</button>
+          </div>
+        </div>
+        <div class="photo-container" data-index="2">
+          <img src="img/3.jpg" alt="Nuestra foto 3" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Celebrando tu cumpleaños 🎂</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="2">❤️</button>
+            <button class="reaction-btn" data-photo="2">😍</button>
+          </div>
+        </div>
+        <div class="photo-container" data-index="3">
+          <img src="img/6.jpg" alt="Nuestra foto 4" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Nuestra primera cena especial 🍷</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="3">❤️</button>
+            <button class="reaction-btn" data-photo="3">😍</button>
+          </div>
+        </div>
+        <div class="photo-container" data-index="4">
+          <img src="img/5.jpg" alt="Nuestra foto 5" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Ese viaje inolvidable ✈️</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="4">❤️</button>
+            <button class="reaction-btn" data-photo="4">😍</button>
+          </div>
+        </div>
+        <div class="photo-container" data-index="5">
+          <img src="img/flores.jpg" alt="Nuestra foto 6" class="photo-thumb">
+          <div class="lock-overlay">
+            <i class="fas fa-lock"></i>
+            <span>Toca para descubrir este recuerdo</span>
+          </div>
+          <div class="photo-caption">Mi favorita de todas 💖</div>
+          <div class="photo-reactions">
+            <button class="reaction-btn" data-photo="5">❤️</button>
+            <button class="reaction-btn" data-photo="5">😍</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="message-box" aria-live="polite">
+        <div id="message" class="message-text">Toca las fotos bloqueadas para descubrir nuestros recuerdos</div>
+        <div class="controls" aria-hidden="true">
+          <!-- controles vacíos intencionadamente para interfaz minimalista móvil -->
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      Cada recuerdo contigo es especial <span aria-hidden="true">💖</span>
+    </footer>
+  </main>
+
+  <!-- Galería modal -->
+  <div class="gallery-container" id="gallery">
+    <button class="close-gallery" id="close-gallery">×</button>
+    <img id="gallery-img" class="gallery-image" src="" alt="">
+    <div class="gallery-counter" id="gallery-counter">1 / 6</div>
+    <div class="gallery-nav">
+      <button class="btn secondary" id="prev-btn">Anterior</button>
+      <button class="btn" id="next-btn">Siguiente</button>
+    </div>
+  </div>
+
+  <script>
+    // ELEMENTOS
+    const messageEl = document.getElementById('message');
+    const tileType = document.getElementById('tile-type');
+    const tileHearts = document.getElementById('tile-hearts');
+    const tileFlowers = document.getElementById('tile-fireworks');
+    const tilePhotos = document.getElementById('tile-photos');
+    const scene = document.getElementById('scene');
+    const gallery = document.getElementById('gallery');
+    const galleryImg = document.getElementById('gallery-img');
+    const galleryCounter = document.getElementById('gallery-counter');
+    const closeGallery = document.getElementById('close-gallery');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const photoContainers = document.querySelectorAll('.photo-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const reactionBtns = document.querySelectorAll('.reaction-btn');
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ESTADO DE FOTOS DESBLOQUEADAS
+    let unlockedPhotos = JSON.parse(localStorage.getItem('unlockedPhotos')) || [];
+    let currentPhotoIndex = 0;
+
+    // GALERÍA - MATRIZ CORREGIDA
+    const photos = [
+      'img/1.jpg',
+      'img/2.jpg',
+      'img/3.jpg',
+      'img/6.jpg',
+      'img/5.jpg',
+      'img/flores.jpg'
+    ];
+    
+    // Mensajes especiales para cada foto
+    const photoMessages = [
+      "Te quiero",
+      "Sos muy linda",
+      "Te mando un beso",
+      "También un abrazo",
+      "Te extraño",
+      "ESTA SON LAS FLORES, SI NO QUERES VER NO TOQUES"
+    ];
+    
+    // Inicializar estado de fotos
+    function initializePhotos() {
+      console.log("Inicializando fotos. Desbloqueadas:", unlockedPhotos);
+      
+      photoContainers.forEach((container, index) => {
+        const thumb = container.querySelector('.photo-thumb');
+        
+        if (unlockedPhotos.includes(index)) {
+          // Foto ya desbloqueada
+          container.classList.add('unlocked');
+          thumb.classList.add('unlocked');
+          console.log(`Foto ${index} ya estaba desbloqueada`);
+        } else {
+          // Foto bloqueada
+          container.classList.remove('unlocked');
+          thumb.classList.remove('unlocked');
+        }
+      });
+      
+      updateProgress();
+    }
+    
+    // Desbloquear una foto - FUNCIÓN MEJORADA
+    function unlockPhoto(index) {
+      console.log("Intentando desbloquear foto:", index);
+      
+      if (!unlockedPhotos.includes(index)) {
+        unlockedPhotos.push(index);
+        localStorage.setItem('unlockedPhotos', JSON.stringify(unlockedPhotos));
+        console.log("Foto desbloqueada. Nuevo estado:", unlockedPhotos);
+        
+        const container = document.querySelector(`.photo-container[data-index="${index}"]`);
+        const thumb = container.querySelector('.photo-thumb');
+        
+        // Efecto visual de desbloqueo
+        const unlockEffect = document.createElement('div');
+        unlockEffect.classList.add('unlock-effect');
+        container.appendChild(unlockEffect);
+        
+        // Cambiar estado visual inmediatamente
+        container.classList.add('unlocked');
+        thumb.classList.add('unlocked');
+        
+        // Remover efecto después de la animación
+        setTimeout(() => {
+          unlockEffect.remove();
+        }, 1000);
+        
+        // Efectos especiales
+        sparkles(12);
+        createFlowerShower();
+        
+        // Mensaje especial
+        typewriter(photoMessages[index], 36);
+        
+        // Actualizar progreso
+        updateProgress();
+        
+        // Vibración en dispositivos móviles
+        try{ if(navigator.vibrate) navigator.vibrate([100, 50, 100]); }catch(e){}
+        
+        // Mensaje especial si es la última foto
+        if (unlockedPhotos.length === photos.length) {
+          setTimeout(() => {
+            typewriter('¡Has desbloqueado todos nuestros recuerdos! Te amo 💖', 40);
+            rainHearts();
+            sparkles(20);
+          }, 2000);
+        }
+      } else {
+        console.log("La foto ya estaba desbloqueada");
+      }
+    }
+    
+    // Actualizar barra de progreso
+    function updateProgress() {
+      const progress = (unlockedPhotos.length / photos.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `${unlockedPhotos.length}/${photos.length} fotos desbloqueadas`;
+    }
+    
+    // Abrir galería solo con fotos desbloqueadas
+    function openGallery() {
+      if (unlockedPhotos.length === 0) {
+        typewriter('Primero desbloquea algunas fotos tocándolas', 36);
+        return;
+      }
+      
+      // Mostrar la primera foto desbloqueada
+      currentPhotoIndex = unlockedPhotos[0];
+      updateGallery();
+      gallery.style.display = 'flex';
+      sparkles(8);
+    }
+    
+    function updateGallery() {
+      galleryImg.src = photos[currentPhotoIndex];
+      galleryCounter.textContent = `${unlockedPhotos.indexOf(currentPhotoIndex) + 1} / ${unlockedPhotos.length}`;
+      // Remover clase de zoom si estaba activa
+      galleryImg.classList.remove('zoomed');
+    }
+    
+    function nextPhoto() {
+      const currentIndex = unlockedPhotos.indexOf(currentPhotoIndex);
+      const nextIndex = (currentIndex + 1) % unlockedPhotos.length;
+      currentPhotoIndex = unlockedPhotos[nextIndex];
+      updateGallery();
+    }
+    
+    function prevPhoto() {
+      const currentIndex = unlockedPhotos.indexOf(currentPhotoIndex);
+      const prevIndex = (currentIndex - 1 + unlockedPhotos.length) % unlockedPhotos.length;
+      currentPhotoIndex = unlockedPhotos[prevIndex];
+      updateGallery();
+    }
+    
+    // Función para mostrar like en una foto
+    function showLike(photoIndex) {
+      if (!unlockedPhotos.includes(photoIndex)) return;
+      
+      const container = document.querySelector(`.photo-container[data-index="${photoIndex}"]`);
+      const thumb = container.querySelector('.photo-thumb');
+      
+      // Efecto visual de like
+      thumb.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        thumb.style.transform = 'scale(1)';
+      }, 300);
+      
+      // Efectos visuales
+      sparkles(8);
+      rainHearts();
+    }
+    
+    // Inicializar las fotos al cargar la página
+    initializePhotos();
+
+    // Eventos de la galería
+    tilePhotos.addEventListener('click', openGallery);
+    
+    closeGallery.addEventListener('click', () => {
+      gallery.style.display = 'none';
+    });
+    
+    prevBtn.addEventListener('click', prevPhoto);
+    nextBtn.addEventListener('click', nextPhoto);
+    
+    // Zoom en imagen de galería al hacer clic
+    galleryImg.addEventListener('click', () => {
+      galleryImg.classList.toggle('zoomed');
+    });
+    
+    // Desbloquear fotos al hacer clic - EVENTOS MEJORADOS
+    photoContainers.forEach((container) => {
+      const overlay = container.querySelector('.lock-overlay');
+      const thumb = container.querySelector('.photo-thumb');
+      const index = parseInt(container.getAttribute('data-index'));
+      
+      // Evento para el overlay (candado)
+      overlay.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evitar que el evento se propague
+        console.log("Clic en overlay de foto:", index);
+        unlockPhoto(index);
+      });
+      
+      // Evento para la imagen misma
+      thumb.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evitar que el evento se propague
+        console.log("Clic en thumb de foto:", index);
+        if (!unlockedPhotos.includes(index)) {
+          unlockPhoto(index);
+        } else {
+          // Si ya está desbloqueada, abrir la galería en esa foto
+          currentPhotoIndex = index;
+          updateGallery();
+          gallery.style.display = 'flex';
+        }
+      });
+    });
+    
+    // Botones de reacción
+    reactionBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const photoIndex = parseInt(this.getAttribute('data-photo'));
+        showLike(photoIndex);
+      });
+    });
+    
+    // Cerrar galería con tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && gallery.style.display === 'flex') {
+        gallery.style.display = 'none';
+      }
+    });
+
+    // TYPEWRITER
+    function typewriter(text, speed = 40){
+      messageEl.textContent = '';
+      let i = 0;
+      function step(){
+        if(i <= text.length){
+          messageEl.textContent = text.slice(0,i);
+          i++;
+          if(!reduceMotion) setTimeout(step, speed);
+        }
+      }
+      step();
+    }
+
+    // MENSAJES: cariñosos y juguetones
+    const messages = [
+      'Sos muy linda',
+      'Te quiero',
+      'Te extraño',
+      'Quiero verte',
+      'Besito',
+      'Sos gay',
+    ];
+
+    // ASIGNACIONES
+    let messageIndex = 0; // Contador para seguir el orden
+
+    if(tileType) tileType.addEventListener('click', () => {
+      typewriter(messages[messageIndex], 36);
+      sparkles(10);
+      
+      // Avanzar al siguiente mensaje, o volver al inicio
+      messageIndex = (messageIndex + 1) % messages.length;
+    });
+    
+    if(tileHearts) tileHearts.addEventListener('click', () => { 
+      rainHearts(); 
+      messageEl.textContent = 'Corazones para la gay'; 
+      sparkles(6); 
+    });
+    
+    // ahora tileFlowers crea flores en lugar de pétalos/confeti
+    if(tileFlowers) tileFlowers.addEventListener('click', () => { 
+      createFlowerShower(); 
+      messageEl.textContent = 'Flores para la gay'; 
+    });
+
+    // TOUCH HEARTS
+    function spawnHeart(x,y,emoji='❤'){
+      const el = document.createElement('div');
+      el.textContent = emoji;
+      el.className = 'little-heart';
+      el.style.left = (x - 18) + 'px';
+      el.style.top = (y - 18) + 'px';
+      el.style.fontSize = (14 + Math.random()*22) + 'px';
+      el.style.opacity = Math.random() * 0.8 + 0.2;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 7000);
+      try{ if(navigator.vibrate) navigator.vibrate(8); }catch(e){}
+    }
+
+    function rainHearts(){
+      const n = 20;
+      for(let i=0;i<n;i++){
+        setTimeout(()=>{
+          const x = window.innerWidth * Math.random();
+          const y = window.innerHeight * (0.2 + Math.random()*0.6);
+          spawnHeart(x,y,['💖','💗','💕','💘'][Math.floor(Math.random()*4)]);
+        }, i*90);
+      }
+    }
+
+    // PARTICULAS (canvas)
+    function sparkles(amount){
+      if(reduceMotion) return;
+      const w = scene.width = window.innerWidth; const h = scene.height = window.innerHeight;
+      const ctx = scene.getContext('2d');
+      if(!ctx) return;
+      let particles = [];
+      for(let i=0;i<amount;i++) particles.push({x:w/2 + (Math.random()-0.5)*200, y:h*0.35 + (Math.random()-0.5)*120, vx:(Math.random()-0.5)*6, vy:(Math.random()-0.5)*6, r:2+Math.random()*4, col:'hsl('+(Math.random()*360|0)+',70%,65%)'});
+      let t=0;
+      function frame(){
+        ctx.clearRect(0,0,w,h);
+        for(let p of particles){ p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.r *= 0.99; ctx.beginPath(); ctx.fillStyle = p.col; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
+        t++; if(t<80) requestAnimationFrame(frame); else ctx.clearRect(0,0,w,h);
+      }
+      frame();
+    }
+
+    // FLOWERS: lightweight SVG-based flowers with smooth movement
+    function createFlower(x = null, y = null, delay = 0) {
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flower';
+      // default origin near center-top
+      const ox = x !== null ? x : (window.innerWidth / 2 - 18 + (Math.random()*100-50));
+      const oy = y !== null ? y : (window.innerHeight * 0.45 + (Math.random()*40-20));
+      wrapper.style.left = ox + 'px';
+      wrapper.style.top = oy + 'px';
+
+      // create inline SVG
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('viewBox','0 0 100 100');
+      svg.setAttribute('width','36'); svg.setAttribute('height','36');
+
+      // center circle
+      const center = document.createElementNS(svgNS, 'circle');
+      center.setAttribute('cx','50'); center.setAttribute('cy','50'); center.setAttribute('r','8'); center.setAttribute('fill','#FFD1DC');
+      center.setAttribute('stroke','#FF6B9D'); center.setAttribute('stroke-width','1');
+      svg.appendChild(center);
+
+      // petals (5)
+      for(let i=0;i<5;i++){
+        const petal = document.createElementNS(svgNS, 'ellipse');
+        const angle = (i * (360/5)) * Math.PI / 180;
+        const px = 50 + Math.cos(angle) * 26;
+        const py = 50 + Math.sin(angle) * 26;
+        petal.setAttribute('cx', px);
+        petal.setAttribute('cy', py);
+        petal.setAttribute('rx','10');
+        petal.setAttribute('ry','16');
+        petal.setAttribute('fill','#FF7FA5');
+        petal.setAttribute('transform', `rotate(${i*72} 50 50)`);
+        petal.setAttribute('opacity', '0.98');
+        svg.appendChild(petal);
+      }
+
+      wrapper.appendChild(svg);
+      document.body.appendChild(wrapper);
+
+      const duration = 3200 + Math.random() * 2000; // 3.2s - 5.2s
+      const tx = Math.random() * 220 - 110; // lateral drift
+      const ty = - (window.innerHeight + 140); // go above top
+      const rotate = (Math.random()*720 - 360);
+      const scale = 0.9 + Math.random()*0.5;
+
+      // initial transform
+      wrapper.style.transform = `translate3d(0,0,0) rotate(${Math.random()*30-15}deg) scale(${scale})`;
+      wrapper.style.opacity = '1';
+
+      setTimeout(()=>{
+        wrapper.style.transition = `transform ${duration}ms cubic-bezier(.2,.9,.2,1), opacity ${duration}ms linear`;
+        wrapper.style.transform = `translate3d(${tx}px, ${ty}px,0) rotate(${rotate}deg) scale(${scale*0.9})`;
+        wrapper.style.opacity = '0';
+      }, delay);
+
+      // cleanup
+      setTimeout(()=>{ try{ wrapper.remove(); }catch(e){} }, duration + delay + 150);
+    }
+
+    function createFlowerShower(){
+      if(reduceMotion) return;
+      const cx = window.innerWidth/2;
+      const cy = window.innerHeight*0.45;
+      const count = 18;
+      for(let i=0;i<count;i++){
+        createFlower(
+          cx + (Math.random()*240 - 120),
+          cy + (Math.random()*80 - 40),
+          i * 80
+        );
+      }
+    }
+
+    // Pointer interaction - leave a heart where touch/click happens
+    function handlePointer(e){
+      const x = (e.touches ? e.touches[0].clientX : e.clientX);
+      const y = (e.touches ? e.touches[0].clientY : e.clientY);
+      const targetTag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if(targetTag === 'button' || targetTag === 'svg' || (e.target && e.target.closest && e.target.closest('button'))) return;
+      spawnHeart(x,y,['💖','💗','💕','💘'][Math.floor(Math.random()*4)]);
+    }
+    ['click','touchstart'].forEach(ev => document.addEventListener(ev, handlePointer, {passive:true}));
+
+    // Floating background hearts (decoration)
+    (function floatHearts(){
+      for(let i=0;i<6;i++){
+        const el = document.createElement('div');
+        el.className = 'little-heart';
+        el.style.left = (Math.random()*90) + 'vw';
+        el.style.top = (60 + Math.random()*30) + 'vh';
+        el.style.fontSize = (12 + Math.random()*28) + 'px';
+        el.style.opacity = 0.12 + Math.random()*0.35;
+        el.textContent = ['❤','💖','💗'][Math.floor(Math.random()*3)];
+        el.style.animationDelay = (Math.random()*6) + 's';
+        document.body.appendChild(el);
+      }
+    })();
+
+    // Resize scene
+    function resizeScene(){ scene.width = window.innerWidth; scene.height = window.innerHeight; }
+    window.addEventListener('resize', resizeScene); resizeScene();
+
+    // Keyboard accessibility: Enter / Space on tiles
+    document.querySelectorAll('.tile').forEach(tile => {
+      tile.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tile.click(); } });
+    });
+
+    // Mensaje inicial breve
+    setTimeout(()=>{ 
+      if(messageEl.textContent.includes('Toc')) {
+        if (unlockedPhotos.length === 0) {
+          messageEl.textContent = 'Toca las fotos para descubrir nuestros recuerdos';
+        } else {
+          messageEl.textContent = 'Sigue descubriendo más fotos';
+        }
+      }
+    }, 1200);
+  </script>
+</body>
+</html>
