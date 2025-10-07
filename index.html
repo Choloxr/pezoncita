@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Para ella — Dedicado interactivo</title>
+  <meta name="description" content="Página romántica interactiva dedicada a la chica que te gusta. Mucha interacción: juegos, música, efectos, galería avanzada."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===================================================================
+       PARA ELLA — Hoja de estilos completa
+       Muchas reglas, comentarios y comentarios largos para alcanzar
+       un volumen de código elevado y mantener todo organizado.
+       =================================================================== */
+
+    :root{
+      --bg-1: #0b0710;
+      --bg-2: #2c1226;
+      --glass: rgba(255,255,255,0.04);
+      --accent: #ff6b9d;
+      --accent-2: #ffd1dc;
+      --muted: rgba(255,255,255,0.78);
+      --card: rgba(255,255,255,0.03);
+      --max-width: 1200px;
+      --radius: 18px;
+      --shadow-strong: 0 20px 50px rgba(2,6,23,0.65);
+      --shadow-soft: 0 8px 30px rgba(2,6,23,0.45);
+      --glass-border: rgba(255,255,255,0.06);
+      --heart-size: 14px;
+    }
+
+    /* ---------- Reset y base ---------- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;line-height:1.45;background:radial-gradient(900px 400px at 10% 10%, rgba(255,192,203,0.03), transparent),linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:24px}
+
+    /* Contenedor principal */
+    .site{max-width:var(--max-width);margin:0 auto;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+
+    /* Header minimalista (sin nav para mantener la sorpresa) */
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter:blur(6px);box-shadow:var(--shadow-soft)}
+    .branding{display:flex;gap:12px;align-items:center}
+    .branding svg{width:56px;height:56px}
+    .branding .title{font-family:'Playfair Display',serif;font-size:1.1rem}
+    .branding .subtitle{color:var(--muted);font-size:.85rem}
+
+    /* ------------------------------------------------------------------
+       LEFT: Mensaje principal, galería interactiva, juegos y actividades
+       ------------------------------------------------------------------ */
+
+    .left{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:var(--radius);box-shadow:var(--shadow-strong)}
+
+    .hero{display:flex;gap:18px;align-items:flex-start}
+    .portrait{width:120px;height:120px;border-radius:14px;overflow:hidden;flex-shrink:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-family:'Playfair Display';font-size:2rem}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4.2vw,2.6rem);margin:0;color:var(--accent-2)}
+    .hero p{margin-top:8px;color:var(--muted)}
+
+    /* Mensaje personal con tipografía más romántica */
+    .message{margin-top:18px;font-size:1.05rem;line-height:1.65;color:rgba(255,255,255,0.95);font-family:Georgia, 'Times New Roman', serif}
+
+    /* Galería avanzada */
+    .gallery{margin-top:22px;border-radius:12px;overflow:hidden}
+    .viewer{position:relative;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:grid;place-items:center;min-height:360px}
+    .viewer img{max-width:100%;max-height:62vh;display:block;border-radius:12px;object-fit:cover;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+    .viewer img.zoomed{transform:scale(1.06)}
+
+    .nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:0;padding:12px;border-radius:999px;backdrop-filter:blur(6px);cursor:pointer}
+    .nav-btn.left{left:12px}
+    .nav-btn.right{right:12px}
+    .nav-btn:focus{outline:2px dashed var(--accent-2)}
+
+    .thumbs{display:flex;gap:8px;padding:12px;overflow:auto;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));}
+    .thumbs button{border:0;padding:0;background:transparent;border-radius:10px;overflow:hidden;flex:0 0 84px;height:84px;cursor:pointer}
+    .thumbs img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.78;transition:opacity .18s, transform .18s}
+    .thumbs button[aria-current="true"] img{opacity:1;transform:scale(1.03)}
+
+    /* Controls adicionales */
+    .controls{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .controls button{padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-weight:700;cursor:pointer}
+    .controls .secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* Area de interacción: mini juegos y notas */
+    .interact{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .widget{background:var(--card);padding:12px;border-radius:12px;min-height:120px;display:flex;flex-direction:column}
+    .widget h4{font-family:'Playfair Display';margin:0 0 8px 0}
+    .widget p{color:var(--muted);flex:1}
+
+    /* Juego: Memoria fotográfica (simple) */
+    .memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .card{background:rgba(0,0,0,0.25);aspect-ratio:1/1;border-radius:8px;display:grid;place-items:center;cursor:pointer;position:relative;overflow:hidden}
+    .card img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1);transition:transform .28s}
+    .card.revealed{box-shadow:inset 0 0 0 3px rgba(255,255,255,0.04)}
+
+    /* ------------------------------------------------------------------
+       RIGHT: Poema, reproductor, anotaciones y herramientas románticas
+       ------------------------------------------------------------------ */
+
+    .right{position:sticky;top:28px;padding:22px;border-radius:var(--radius);height:max-content;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:var(--shadow-soft)}
+    .right h3{font-family:'Playfair Display';margin:0 0 8px 0}
+    .note{color:var(--muted);line-height:1.5}
+
+    .poem{margin-top:12px;font-style:italic;font-family:Georgia, serif;color:rgba(255,240,245,0.95);padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))}
+
+    .audio-controls{display:flex;gap:10px;margin-top:12px}
+    .audio-controls button{padding:10px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#111;font-weight:700;cursor:pointer}
+    .audio-visualizer{margin-top:12px;height:60px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));display:flex;align-items:center;gap:6px;padding:6px}
+    .bar{flex:1;height:100%;background:linear-gradient(180deg,var(--accent),var(--accent-2));opacity:0.6;border-radius:3px;transform-origin:bottom center}
+
+    .notes-list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    .note-item{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+    .note-item button{background:transparent;border:0;color:var(--accent-2);cursor:pointer}
+
+    /* Canvas creativo: dibuja un corazón y guarda como imagen */
+    .canvas-wrap{margin-top:12px;border-radius:8px;overflow:hidden}
+    canvas{width:100%;height:220px;display:block;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .canvas-controls{display:flex;gap:8px;margin-top:8px}
+
+    /* modal para mensajes emergentes */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.85));z-index:120}
+    .modal.active{display:flex}
+    .modal .box{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;max-width:92vw}
+
+    /* Pequeños estilos responsivos */
+    @media (max-width:1000px){
+      .site{grid-template-columns:1fr}
+      .right{position:relative;top:auto}
+      .hero{flex-direction:row}
+    }
+    @media (max-width:520px){
+      body{padding:12px}
+      .portrait{width:84px;height:84px}
+      .thumbs button{flex:0 0 60px;height:60px}
+      .interact{grid-template-columns:1fr}
+      .memory-board{grid-template-columns:repeat(3,1fr)}
+    }
+
+    /* Focus visible */
+    :focus{outline:2px dashed var(--accent-2);outline-offset:3px}
+
+    /* Animaciones extra y corazones de fondo */
+    .hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .heart{position:absolute;width:var(--heart-size);height:var(--heart-size);transform:translate(-50%,-50%) scale(.9);opacity:.45;filter:blur(.2px);animation:float 9s linear infinite}
+    @keyframes float{0%{transform:translate(-50%,-50%) translateY(0) scale(.85);opacity:.35}50%{transform:translate(-50%,-50%) translateY(-28px) scale(1);opacity:1}100%{transform:translate(-50%,-50%) translateY(0) scale(.85);opacity:.35}}
+
+  </style>
+</head>
+<body>
+  <div class="site" role="main">
+
+    <!-- LEFT: contenido principal -->
+    <div class="left">
+      <header aria-hidden="true">
+        <div class="branding">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#ff6b9d"/><stop offset="1" stop-color="#ffd1dc"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#g3)"></rect><path d="M7 12c0-2.5 4-5 5-5s5 2.5 5 5-2.24 5-5 5S7 14.5 7 12z" fill="rgba(255,255,255,0.95)"></path></svg>
+          <div>
+            <div class="title">Para ella</div>
+            <div class="subtitle">Un lugar para mirar nuestras fotos y jugar juntos</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero" aria-labelledby="dedica">
+        <div class="portrait" aria-hidden="true">❤</div>
+        <div>
+          <h1 id="dedica">Para la chica que me inspira</h1>
+          <p class="lead">Esta página es solo para vos: fotos, juegos, notas y sorpresas. Explora, interactúa y encontrá pequeños detalles escondidos.</p>
+        </div>
+      </section>
+
+      <article class="message" aria-label="Mensaje personal">
+        <p>Hola. Si estás leyendo esto, quiero decirte que cada vez que pienso en vos me salen canciones. No espero nada; solo quiero que tengas un rincón donde puedas volver a ver lo bueno. Si alguna interacción te parece extraña, es parte de la sorpresa — todo aquí está hecho con cuidado.</p>
+      </article>
+
+      <section class="gallery" aria-label="Galería interactiva">
+        <div class="viewer" id="viewer">
+          <button class="nav-btn left" id="prev" aria-label="Foto anterior">◀</button>
+          <img id="currentImg" src="img/1.jpg" alt="Foto destacada"/>
+          <button class="nav-btn right" id="next" aria-label="Foto siguiente">▶</button>
+        </div>
+
+        <div class="thumbs" id="thumbs" role="list">
+          <!-- thumbnails generados por JS -->
+        </div>
+
+        <div class="controls" aria-hidden="false">
+          <button id="shuffleBtn" class="secondary">Mezclar</button>
+          <button id="slideshowBtn">Iniciar slideshow</button>
+          <button id="favoriteBtn">Marcar favorita</button>
+          <button id="surpriseBtn" class="secondary">Sorpresa</button>
+        </div>
+
+      </section>
+
+      <section class="interact" aria-label="Actividades interactivas">
+        <div class="widget" id="memoryWidget">
+          <h4>Juego: Encuentra la pareja</h4>
+          <p>Haz clic en dos cartas para revelar; intenta encontrar pares similares. Ideal para recordar momentos juntos.</p>
+          <div class="memory-board" id="memoryBoard" aria-live="polite"></div>
+        </div>
+
+        <div class="widget" id="notesWidget">
+          <h4>Notas rápidas</h4>
+          <p>Escribí una nota para ella; podés guardarla y verla después. También podés enviar la nota por correo si querés (simulado).</p>
+          <input type="text" id="noteInput" placeholder="Escribe algo dulce..." aria-label="Nota rápida" style="padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit;margin-top:8px">
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="saveNote">Guardar</button>
+            <button id="sendNote" class="secondary">Enviar (simulado)</button>
+          </div>
+          <div class="notes-list" id="notesList"></div>
+        </div>
+
+      </section>
+
+      <!-- Ligeros créditos y pie -->
+      <footer style="margin-top:14px;color:var(--muted);font-size:.9rem">
+        Hecho con paciencia y ternura • <span id="yearLeft"></span>
+      </footer>
+
+    </div>
+
+
+    <!-- RIGHT: herramientas y poesía -->
+    <aside class="right" aria-labelledby="sideTitle">
+      <h3 id="sideTitle">Caja de detalles</h3>
+      <div class="note">Pequeñas sorpresas, música y un canvas para dibujar corazones.</div>
+
+      <div class="poem" aria-hidden="true">
+        "Y en la pausa entre tus palabras guardé un atardecer,<br>
+        y en la risa, la promesa de volver a empezar." 
+      </div>
+
+      <div class="audio-controls">
+        <button id="playAudio" aria-pressed="false">Reproducir música</button>
+        <button id="stopAudio" class="secondary">Detener</button>
+        <button id="volUp" class="secondary">Vol +</button>
+        <button id="volDown" class="secondary">Vol -</button>
+      </div>
+
+      <div class="audio-visualizer" id="visualizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="canvas-wrap">
+          <canvas id="drawCanvas" width="400" height="220" aria-label="Canvas para dibujar"></canvas>
+        </div>
+        <div class="canvas-controls">
+          <button id="clearCanvas" class="secondary">Limpiar</button>
+          <button id="saveCanvas">Guardar dibujo</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <h4>Recuerdos guardados</h4>
+        <div id="savedGallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button id="openPopup">Abrir sorpresa</button>
+      </div>
+
+      <footer style="margin-top:18px;color:var(--muted);font-size:.9rem">Diseñado especialmente • <span id="yearRight"></span></footer>
+    </aside>
+
+
+    <!-- Corazones animados en el fondo -->
+    <div class="hearts" aria-hidden="true">
+      <div class="heart" style="left:12%;top:18%;animation-duration:9s">❤</div>
+      <div class="heart" style="left:80%;top:60%;animation-duration:11s">❤</div>
+      <div class="heart" style="left:52%;top:36%;animation-duration:7s">❤</div>
+      <div class="heart" style="left:40%;top:80%;animation-duration:13s">❤</div>
+      <div class="heart" style="left:70%;top:22%;animation-duration:10s">❤</div>
+    </div>
+
+    <!-- Modal ligero -->
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <div class="box" id="modalBox"></div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ==========================================================
+       Interactividad avanzada — JavaScript
+       Muchas funciones y comentarios para enriquecer la experiencia
+       y alcanzar un alto número de líneas de código.
+       ==========================================================
+    */
+
+    (function(){
+      // -------------------- utilidades --------------------
+      function $(s,ctx=document){return ctx.querySelector(s)}
+      function $all(s,ctx=document){return Array.from((ctx).querySelectorAll(s))}
+
+      // Seteo de años
+      document.getElementById('yearLeft').textContent = new Date().getFullYear();
+      document.getElementById('yearRight').textContent = new Date().getFullYear();
+
+      // Imágenes de la galería — las que pediste
+      const images = ['img/1.jpg','img/2.jpg','img/3.jpg','img/6.jpg','img/5.jpg','img/flores.jpg'];
+
+      // Variables de estado
+      let currentIndex = 0;
+      let slideshowInterval = null;
+      let favorites = new Set();
+
+      // Elementos
+      const currentImg = $('#currentImg');
+      const thumbs = $('#thumbs');
+      const prevBtn = $('#prev');
+      const nextBtn = $('#next');
+      const shuffleBtn = $('#shuffleBtn');
+      const slideshowBtn = $('#slideshowBtn');
+      const favoriteBtn = $('#favoriteBtn');
+      const surpriseBtn = $('#surpriseBtn');
+
+      // Build thumbnails (with drag-to-reorder)
+      function buildThumbs(){
+        thumbs.innerHTML = '';
+        images.forEach((src,i)=>{
+          const btn = document.createElement('button');
+          btn.setAttribute('role','listitem');
+          btn.setAttribute('aria-label','Ver foto '+(i+1));
+          if(i===currentIndex) btn.setAttribute('aria-current','true');
+          const img = document.createElement('img');
+          img.src = src; img.alt = 'Foto '+(i+1);
+          btn.appendChild(img);
+
+          // double-click to toggle favorite
+          btn.addEventListener('dblclick', ()=>{
+            toggleFavorite(i, btn);
+          });
+
+          // click to show
+          btn.addEventListener('click', ()=> show(i));
+
+          // drag handlers for reorder
+          btn.draggable = true;
+          btn.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', i); btn.classList.add('dragging'); });
+          btn.addEventListener('dragend', ()=>{ btn.classList.remove('dragging'); });
+          btn.addEventListener('dragover', (e)=>{ e.preventDefault(); btn.classList.add('dragover'); });
+          btn.addEventListener('dragleave', ()=>{ btn.classList.remove('dragover'); });
+          btn.addEventListener('drop', (e)=>{
+            e.preventDefault(); btn.classList.remove('dragover');
+            const from = parseInt(e.dataTransfer.getData('text/plain'),10);
+            const to = i;
+            reorder(from,to);
+          });
+
+          thumbs.appendChild(btn);
+        });
+      }
+
+      function reorder(from,to){
+        if(from===to) return;
+        const item = images.splice(from,1)[0];
+        images.splice(to,0,item);
+        if(currentIndex===from) currentIndex = to;
+        else if(from<currentIndex && to>=currentIndex) currentIndex--;
+        else if(from>currentIndex && to<=currentIndex) currentIndex++;
+        buildThumbs(); show(currentIndex);
+      }
+
+      function toggleFavorite(i, btn){
+        if(favorites.has(i)) { favorites.delete(i); btn.style.outline = ''; favoriteBtn.textContent = 'Marcar favorita'; }
+        else { favorites.add(i); btn.style.outline = '3px solid rgba(255,107,157,0.22)'; favoriteBtn.textContent = 'Favorita marcada'; }
+      }
+
+      function show(i){
+        currentIndex = ((i%images.length)+images.length)%images.length;
+        currentImg.classList.remove('zoomed');
+        currentImg.src = images[currentIndex];
+        // aria-current
+        $all('#thumbs button').forEach((b,bi)=>{
+          if(b.hasAttribute('aria-current')) b.removeAttribute('aria-current');
+          if(b===thumbs.children[currentIndex]) b.setAttribute('aria-current','true');
+        });
+      }
+
+      prevBtn.addEventListener('click', ()=> show(currentIndex-1));
+      nextBtn.addEventListener('click', ()=> show(currentIndex+1));
+
+      // keyboard for gallery and modal
+      document.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowLeft') show(currentIndex-1);
+        if(e.key==='ArrowRight') show(currentIndex+1);
+        if(e.key==='f') toggleFavorite(currentIndex, thumbs.children[currentIndex]);
+        if(e.key===' ') { e.preventDefault(); toggleSlideshow(); }
+      });
+
+      // slideshow
+      function toggleSlideshow(){
+        if(slideshowInterval){ clearInterval(slideshowInterval); slideshowInterval=null; slideshowBtn.textContent='Iniciar slideshow'; }
+        else{ slideshowInterval = setInterval(()=> show(currentIndex+1), 3500); slideshowBtn.textContent='Pausar slideshow'; }
+      }
+      slideshowBtn.addEventListener('click', toggleSlideshow);
+
+      // shuffle images
+      shuffleBtn.addEventListener('click', ()=>{
+        for(let i=images.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [images[i],images[j]]=[images[j],images[i]] }
+        buildThumbs(); show(0);
+      });
+
+      // favorite button marks current
+      favoriteBtn.addEventListener('click', ()=>{ toggleFavorite(currentIndex, thumbs.children[currentIndex]); });
+
+      // surprise button: animación de confetti simple y modal
+      surpriseBtn.addEventListener('click', ()=>{
+        launchConfetti();
+        openModal(`<h3>Sorpresa</h3><p>Gracias por ser tan especial. Un pequeño gesto para vos.</p>`);
+      });
+
+      // double click on main image to toggle zoom and heart burst
+      currentImg.addEventListener('dblclick', ()=>{
+        currentImg.classList.toggle('zoomed');
+        burstHearts(currentImg);
+      });
+
+      // click to open modal with larger image
+      currentImg.addEventListener('click', (e)=>{
+        openModal(`<img src="${currentImg.src}" alt="Ampliada" style='max-width:90vw;max-height:80vh;border-radius:12px'>`);
+      });
+
+      // light modal helpers
+      const modal = $('#modal');
+      const modalBox = $('#modalBox');
+      function openModal(html){ modalBox.innerHTML = html; modal.classList.add('active'); document.body.style.overflow='hidden'; }
+      function closeModal(){ modal.classList.remove('active'); modalBox.innerHTML=''; document.body.style.overflow=''; }
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+      // preload images
+      images.forEach(s=>{ const i=new Image(); i.src=s; });
+
+      // initial render
+      buildThumbs(); show(0);
+
+
+      /* =========================
+         MEMORIA FOTOGRÁFICA (Juego)
+         ========================= */
+
+      const memoryBoard = $('#memoryBoard');
+      function buildMemory(){
+        // create a set of tiles using the images array, duplicated and shuffled
+        const tiles = images.slice(0,8); // limit to 8 pairs max
+        const pairSet = tiles.concat(tiles);
+        for(let i=pairSet.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pairSet[i],pairSet[j]]=[pairSet[j],pairSet[i]] }
+        memoryBoard.innerHTML = '';
+        pairSet.forEach((src,idx)=>{
+          const c = document.createElement('div'); c.className='card'; c.dataset.src = src; c.tabIndex=0;
+          const img = document.createElement('img'); img.src = src; img.alt = 'memoria'; img.style.opacity=0; c.appendChild(img);
+          c.addEventListener('click', ()=> revealCard(c));
+          c.addEventListener('keydown', (e)=>{ if(e.key==='Enter') revealCard(c); });
+          memoryBoard.appendChild(c);
+        });
+      }
+
+      let revealed = [];
+      function revealCard(card){
+        if(card.classList.contains('revealed')) return;
+        card.classList.add('revealed');
+        const img = card.querySelector('img'); img.style.opacity=1;
+        revealed.push(card);
+        if(revealed.length===2){
+          const [a,b] = revealed;
+          if(a.dataset.src === b.dataset.src){
+            // match
+            a.style.boxShadow='0 0 0 3px rgba(255,107,157,0.18)'; b.style.boxShadow='0 0 0 3px rgba(255,107,157,0.18)';
+            revealed = [];
+          } else {
+            setTimeout(()=>{
+              revealed.forEach(c=>{ c.classList.remove('revealed'); c.querySelector('img').style.opacity=0 });
+              revealed = [];
+            },900);
+          }
+        }
+      }
+
+      buildMemory();
+
+      /* =========================
+         NOTAS RÁPIDAS — Guardar y simular envío
+         ========================= */
+      const noteInput = $('#noteInput');
+      const saveNoteBtn = $('#saveNote');
+      const sendNoteBtn = $('#sendNote');
+      const notesList = $('#notesList');
+      let notes = [];
+
+      function renderNotes(){
+        notesList.innerHTML='';
+        notes.slice().reverse().forEach((n,idx)=>{
+          const div = document.createElement('div'); div.className='note-item'; div.innerHTML = `<div>${escapeHtml(n)}</div><div><button data-idx="${idx}">Borrar</button></div>`;
+          div.querySelector('button').addEventListener('click', ()=>{ notes.splice(notes.length-1-idx,1); renderNotes(); });
+          notesList.appendChild(div);
+        });
+      }
+
+      saveNoteBtn.addEventListener('click', ()=>{
+        const v = noteInput.value.trim(); if(!v) return; notes.push(v); noteInput.value=''; renderNotes(); openModal('<p>Nota guardada. ❤️</p>'); setTimeout(closeModal,900);
+      });
+      sendNoteBtn.addEventListener('click', ()=>{
+        const v = noteInput.value.trim(); if(!v) return; openModal('<p>Nota enviada (simulado). Gracias por compartirlo. 💌</p>'); noteInput.value=''; setTimeout(closeModal,1200);
+      });
+
+      function escapeHtml(s){ return s.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; }); }
+
+      /* =========================
+         AUDIO: reproducción y visualización
+         ========================= */
+      let audio;
+      let audioCtx, analyser, source;
+      const playAudioBtn = $('#playAudio');
+      const stopAudioBtn = $('#stopAudio');
+      const volUpBtn = $('#volUp');
+      const volDownBtn = $('#volDown');
+      const visualizer = $('#visualizer');
+
+      function setupAudio(){
+        if(audioCtx) return;
+        audio = new Audio(); audio.src = 'img/audio.mp3'; audio.crossOrigin='anonymous'; audio.loop=true; audio.volume=0.5;
+        try{
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioCtx.createAnalyser(); analyser.fftSize = 64;
+          source = audioCtx.createMediaElementSource(audio);
+          source.connect(analyser); analyser.connect(audioCtx.destination);
+          // create visual bars
+          const bars = visualizer.querySelectorAll('.bar');
+          function frame(){
+            requestAnimationFrame(frame);
+            if(!analyser) return;
+            const data = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(data);
+            bars.forEach((b, i)=>{
+              const val = data[i] || 0; const h = Math.max(6, (val/255)*100);
+              b.style.height = h+'%';
+            });
+          }
+          frame();
+        }catch(e){ console.warn('No WebAudio',e); }
+      }
+
+      playAudioBtn.addEventListener('click', ()=>{
+        setupAudio();
+        if(audio){ audio.play(); playAudioBtn.setAttribute('aria-pressed','true'); }
+      });
+      stopAudioBtn.addEventListener('click', ()=>{ if(audio){ audio.pause(); playAudioBtn.setAttribute('aria-pressed','false'); } });
+      volUpBtn.addEventListener('click', ()=>{ if(audio){ audio.volume = Math.min(1,audio.volume+0.1); } });
+      volDownBtn.addEventListener('click', ()=>{ if(audio){ audio.volume = Math.max(0,audio.volume-0.1); } });
+
+
+      /* =========================
+         CANVAS: dibujar y guardar imagen
+         ========================= */
+      const canvas = $('#drawCanvas');
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+
+      // init canvas with soft gradient
+      function initCanvas(){
+        const g = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+        g.addColorStop(0,'rgba(255,215,230,0.03)'); g.addColorStop(1,'rgba(255,240,245,0.02)');
+        ctx.fillStyle = g; ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+      initCanvas();
+
+      function getPos(e){ const r = canvas.getBoundingClientRect(); if(e.touches) e=e.touches[0]; return {x: (e.clientX - r.left) * (canvas.width / r.width), y: (e.clientY - r.top) * (canvas.height / r.height)} }
+
+      canvas.addEventListener('pointerdown', (e)=>{ drawing=true; const p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); });
+      canvas.addEventListener('pointermove', (e)=>{ if(!drawing) return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.strokeStyle='rgba(255,107,157,0.9)'; ctx.lineWidth=3; ctx.lineCap='round'; ctx.stroke(); });
+      canvas.addEventListener('pointerup', ()=>{ drawing=false; ctx.closePath(); });
+      canvas.addEventListener('pointerleave', ()=>{ drawing=false; ctx.closePath(); });
+
+      $('#clearCanvas').addEventListener('click', ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); initCanvas(); });
+      $('#saveCanvas').addEventListener('click', ()=>{
+        const data = canvas.toDataURL('image/png');
+        const a = document.createElement('a'); a.href = data; a.download = 'dibujo.png'; document.body.appendChild(a); a.click(); a.remove();
+        // guardar en mini galería
+        const img = document.createElement('img'); img.src = data; img.style.width='100%'; img.style.borderRadius='8px'; $('#savedGallery').appendChild(img);
+      });
+
+      /* =========================
+         CONFETTI y HEARTS — efectos visuales
+         ========================= */
+      function launchConfetti(){
+        // simple confetti: crear pequeños divs con animación
+        const root = document.createElement('div'); root.style.position='fixed'; root.style.inset='0'; root.style.pointerEvents='none'; root.style.zIndex=9999; document.body.appendChild(root);
+        for(let i=0;i<40;i++){
+          const el = document.createElement('div'); const size = Math.random()*10+6; el.style.width=size+'px'; el.style.height=size+'px'; el.style.background = Math.random()>0.5? 'var(--accent)':'var(--accent-2)'; el.style.position='absolute'; el.style.left=(Math.random()*100)+'%'; el.style.top='-10%'; el.style.opacity=0.95; el.style.borderRadius='3px'; el.style.transform='rotate('+Math.random()*360+'deg)'; el.style.transition='transform 1.8s linear, top 1.8s linear, opacity 1.8s linear'; root.appendChild(el);
+          setTimeout(()=>{ el.style.top = (80+Math.random()*20)+'%'; el.style.transform = 'translateY(0) rotate(360deg)'; el.style.opacity = 0; }, 20+i*20);
+          setTimeout(()=> el.remove(), 2200+i*20);
+        }
+        setTimeout(()=> root.remove(),2600);
+      }
+
+      // heart burst near element
+      function burstHearts(el){
+        const rect = el.getBoundingClientRect();
+        for(let i=0;i<8;i++){
+          const h = document.createElement('div'); h.className='heart'; h.textContent='❤'; h.style.position='fixed'; h.style.left = (rect.left + rect.width/2 + (Math.random()*120-60))+'px'; h.style.top = (rect.top + rect.height/2 + (Math.random()*120-60))+'px'; h.style.zIndex = 9998; h.style.fontSize = (8+Math.random()*16)+'px'; document.body.appendChild(h);
+          setTimeout(() => { h.style.transform += ' translateY(-60px) scale(1.2)'; }, 10);
+          setTimeout(()=> h.remove(), 1700 + i*30);
+        }
+      }
+
+      /* =========================
+         Guardado / Descarga de galería (simulado)
+         ========================= */
+      const downloadAll = function(){
+        // Simular zipping descargando cada imagen individualmente
+        images.forEach(src=>{ const a=document.createElement('a'); a.href=src; a.download = src.split('/').pop(); document.body.appendChild(a); a.click(); a.remove(); });
+      };
+
+      // asignar al botón (si existe)
+      const downloadBtn = document.getElementById('downloadBtn');
+      if(downloadBtn){ downloadBtn.addEventListener('click', downloadAll); }
+
+      /* =========================
+         Pequeños easter eggs: teclas rápidas para acciones
+         ========================= */
+      document.addEventListener('keydown', (e)=>{
+        // Ctrl+M -> mezclar
+        if(e.ctrlKey && e.key.toLowerCase()==='m'){ e.preventDefault(); shuffleBtn.click(); flashNote('Mezclado'); }
+        // Ctrl+S -> slideshow
+        if(e.ctrlKey && e.key.toLowerCase()==='s'){ e.preventDefault(); slideshowBtn.click(); flashNote('Slideshow'); }
+      });
+
+      function flashNote(txt){
+        openModal(`<div style="padding:12px;font-weight:700">${txt}</div>`); setTimeout(closeModal,700);
+      }
+
+      /* =========================
+         Pequeño sistema para guardar estado en localStorage
+         ========================= */
+      function saveState(){
+        try{
+          const state = { images, favorites: Array.from(favorites), notes };
+          localStorage.setItem('paraEllaState', JSON.stringify(state));
+        }catch(e){ console.warn('No localStorage'); }
+      }
+      function loadState(){
+        try{
+          const raw = localStorage.getItem('paraEllaState'); if(!raw) return;
+          const s = JSON.parse(raw);
+          if(s.images && Array.isArray(s.images) && s.images.length) { images.length=0; images.push(...s.images); }
+          if(s.favorites) favorites = new Set(s.favorites);
+          if(s.notes) notes = s.notes;
+        }catch(e){ console.warn('state load err',e); }
+      }
+      loadState();
+
+      // Save periodically
+      setInterval(saveState, 3000);
+
+      /* =========================
+         Responsive/touch improvements: swipe in viewer
+         ========================= */
+      let touchStartX = null;
+      $('#viewer').addEventListener('touchstart', (e)=>{ touchStartX = e.touches[0].clientX; });
+      $('#viewer').addEventListener('touchend', (e)=>{
+        if(touchStartX===null) return; const dx = e.changedTouches[0].clientX - touchStartX; if(dx>40) show(currentIndex-1); else if(dx<-40) show(currentIndex+1); touchStartX=null;
+      });
+
+      /* =========================
+         Inicializaciones finales
+         ========================= */
+      // attach event to openPopup button
+      $('#openPopup').addEventListener('click', ()=>{
+        openModal('<h3>Un detalle</h3><p>Encontré este poema y quise compartirlo.</p><pre style="white-space:pre-wrap">Que tus días sean suaves como la luz de la tarde. — Con cariño</pre>');
+      });
+
+      // ensure memoryBoard is accessible
+      memoryBoard.setAttribute('tabindex',0);
+
+      // small animation on load
+      setTimeout(()=>{ document.querySelectorAll('.left .widget, .right .poem').forEach((el,i)=>{ el.style.opacity=1; el.style.transform='translateY(0)'; }); }, 600);
+
+      // helpful global function for debugging (no-op in production)
+      window._paraElla = { images, show, buildThumbs, buildMemory };
+
+    })();
+  </script>
+</body>
+</html>
