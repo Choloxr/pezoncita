@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Para vos ❤️</title>
+  <meta name="description" content="Una página romántica y responsiva para compartir recuerdos" />
+
+  <!-- Tipografía -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #fff0f3;
+      --bg2: #fff6f9;
+      --accent: #ff6b81;
+      --accent-2: #ff9bb3;
+      --text: #222;
+      --muted: #666;
+      --card: rgba(255,255,255,0.95);
+      --shadow: 0 10px 40px rgba(0,0,0,0.10);
+      --radius: 18px;
+      --maxw: 980px;
+      --ui-size: 14px;
+    }
+
+    /* Reset & base */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color:var(--text);
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:20px;
+      min-height:100vh;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92));
+      border-radius:24px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      margin-bottom:24px;
+    }
+
+    /* hearts canvas */
+    #heartsCanvas{
+      position:absolute;inset:0;pointer-events:none;z-index:1;
+    }
+
+    header.hero{
+      position:relative;z-index:2;padding:26px 18px 12px;text-align:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.35));
+      -webkit-backdrop-filter: blur(4px);backdrop-filter: blur(4px);
+    }
+
+    .brand{display:flex;gap:12px;align-items:center;justify-content:center;margin-bottom:6px}
+    .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:0 8px 30px rgba(255,107,129,0.18)}
+    h1{margin:6px 0 2px;font-size:1.6rem;letter-spacing:0.2px}
+    .subtitle{margin:0 auto;max-width:760px;color:var(--muted);font-size:0.98rem;line-height:1.4}
+
+    /* card */
+    .card{margin:18px auto 0;max-width:920px;background:var(--card);border-radius:20px;padding:16px;display:grid;grid-template-columns:1fr;gap:16px;z-index:2;position:relative;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+
+    .top-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .days-card{flex:1 1 220px;background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+    .days-card .num{font-size:2.4rem;font-weight:700;color:var(--accent)}
+    .days-card small{display:block;color:var(--muted);margin-top:6px}
+
+    .polaroid{width:170px;height:210px;background:linear-gradient(180deg,#fff,#fffefc);border-radius:12px;padding:10px 12px 16px;box-shadow:0 14px 34px rgba(0,0,0,0.08);transform:rotate(-6deg);display:flex;align-items:flex-start;justify-content:center;flex-direction:column}
+    .polaroid img{width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+    .polaroid .cap{font-size:0.82rem;color:var(--muted);text-align:left}
+
+    .text-area{padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,250,252,0.6));box-shadow:inset 0 6px 18px rgba(0,0,0,0.02);min-height:120px}
+    .text-area .placeholder{color:var(--muted);font-size:1rem;line-height:1.6}
+
+    /* gallery grid: responsive, touch-friendly */
+    .galeria{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap:12px;
+      padding:6px 6px 18px;
+      align-items:start;
+      justify-items:center;
+    }
+
+    .media-tile{
+      width:150px;height:150px;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.10);background:#fff;position:relative;transition:transform .22s ease, box-shadow .22s;
+      touch-action:manipulation;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .media-tile img{width:100%;height:100%;object-fit:cover;display:block}
+    .media-tile.video::after{
+      content:'▶';
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%, -50%);
+      background:rgba(0,0,0,0.68);
+      color:white;
+      width:44px;height:44px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      z-index:2;
+    }
+    .media-tile:hover{transform:scale(1.04);box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+
+    /* controls */
+    .controls{display:flex;justify-content:center;gap:12px;padding:12px 8px 18px;align-items:center;flex-wrap:wrap}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:12px;font-weight:600;border:none;box-shadow:0 8px 28px rgba(255,107,129,0.18);display:inline-flex;gap:8px;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .btn.secondary{background:transparent;color:var(--accent);border:1px solid rgba(255,107,129,0.14);box-shadow:none}
+
+    /* modal */
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:999;
+      background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.85));
+      padding:18px;
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+    }
+    .modal.open{display:flex}
+    .viewer{
+      max-width:100%;max-height:100%;
+      width:calc(100% - 40px);
+      height:calc(100% - 120px);
+      display:flex;align-items:center;justify-content:center;
+      position:relative;
+      outline:0;
+    }
+    .modal-img, .modal-video{
+      max-width:100%;max-height:100%;
+      border-radius:12px;
+      box-shadow:0 30px 70px rgba(0,0,0,0.6);
+      object-fit:contain;
+      display:none;
+    }
+    .modal-img{display:block}
+    .modal-video{background:#000}
+    .nav{
+      position:absolute;
+      left:6px;right:6px;
+      top:0;bottom:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      pointer-events:none;
+    }
+    .nav button{
+      pointer-events:auto;
+      background:rgba(255,255,255,0.06);
+      border:none;
+      color:white;
+      padding:12px;
+      border-radius:999px;
+      backdrop-filter: blur(2px);
+      font-size:22px;
+    }
+    .close{
+      position:absolute;
+      top:12px;
+      right:14px;
+      background:transparent;
+      border:0;
+      color:white;
+      font-size:28px;
+      padding:8px;
+      z-index:1000;
+    }
+    .meta{
+      position:absolute;
+      left:18px;right:18px;
+      bottom:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      color:white;
+      font-size:14px;
+    }
+    .meta .caption{
+      flex:1;
+      text-align:left;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .meta .actions{display:flex;gap:8px;align-items:center}
+
+    /* small */
+    footer.small{text-align:center;padding:14px 10px 22px;color:var(--muted);font-size:0.92rem}
+
+    /* heartbeat */
+    .heart-ico{display:inline-block;transform-origin:center}
+    .heart-ico.beat{animation:beat .9s infinite}
+    @keyframes beat{
+      0%{transform:scale(1)}
+      40%{transform:scale(1.18)}
+      60%{transform:scale(0.98)}
+      100%{transform:scale(1)}
+    }
+
+    /* responsive tweaks for iPhone 11 (~375px width) */
+    @media (max-width:420px){
+      .polaroid{width:140px;height:185px}
+      .media-tile{width:110px;height:110px}
+      h1{font-size:1.35rem}
+      .days-card .num{font-size:1.8rem}
+      .viewer{height:calc(100% - 90px)}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main" aria-label="Página romántica para tu novia">
+    <canvas id="heartsCanvas" aria-hidden="true"></canvas>
+
+    <header class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">❤</div>
+        <div>
+          <h1 id="title">Para mi amor</h1>
+          <div class="subtitle" id="subtitle">Ahora tenes un recuerdo de 2025</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="card" aria-live="polite">
+      <div class="top-row">
+        <div class="days-card" role="status" aria-atomic="true">
+          <div class="num" id="daysCount">0</div>
+          <small id="daysLabel">Días juntos</small>
+          <small style="margin-top:8px;color:var(--muted);font-size:0.82rem">Desde: <span id="startDate">27-12-2025</span></small>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:center;flex:1;justify-content:flex-end">
+          <div class="polaroid" aria-hidden="true">
+            <img id="polaroidImg" src="/img/foto17.jpg" alt="Foto destacada" loading="lazy">
+            <div class="cap" id="polaroidCap">Foto del día</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="text-area" id="textArea">
+        <div class="placeholder">
+          <strong>Te hago esta página con mucho amor</strong><br>
+          <em>Para la más hermosa</em>
+        </div>
+      </section>
+
+      <section>
+        <h3 style="text-align:center;margin:8px 0 12px">Nuestros recuerdos</h3>
+        <div class="galeria" id="gallery" aria-label="Galería de recuerdos">
+          <!-- Gallery items se generan dinámicamente por JS -->
+        </div>
+      </section>
+
+      <div class="controls">
+        <button class="btn" id="openAllBtn" aria-label="Ver galería completa">Ver galería</button>
+        <button class="btn secondary" id="toggleMusic" aria-pressed="false">
+          <span class="heart-ico" id="heartIco">❤</span> Besito en la frente
+        </button>
+      </div>
+    </main>
+
+    <footer class="small">Hecho con amor, te amo ❤</footer>
+  </div>
+
+  <!-- Modal / Lightbox -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Visualizador de medios">
+    <div class="viewer" id="viewer" tabindex="-1">
+      <!-- Imagen o video -->
+      <img id="modalImg" class="modal-img" alt="" draggable="false">
+      <video id="modalVideo" class="modal-video" controls playsinline webkit-playsinline></video>
+
+      <div class="nav" aria-hidden="true">
+        <button class="navbtn" id="prevBtn" aria-label="Anterior">‹</button>
+        <button class="navbtn" id="nextBtn" aria-label="Siguiente">›</button>
+      </div>
+
+      <button class="close" id="closeModal" aria-label="Cerrar galería">✕</button>
+
+      <div class="meta" id="metaBar">
+        <div class="caption" id="metaCaption"></div>
+        <div class="actions">
+          <div style="min-width:6ch;text-align:center" id="indexLabel"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Música -->
+  <audio id="bgMusic" loop preload="none">
+    <source src="img/besito.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+/* ============================
+   CONFIGURACIÓN PRINCIPAL
+   ============================ */
+const START_DATE = '27-12-2025';
+const PHOTO_COUNT = 26;
+const VIDEO_COUNT = 3;
+
+// Rutas de archivos - CON POSTERS SEPARADOS PARA VIDEOS
+const IMG_PATH = 'img/';
+
+// Para FOTOS: foto1.jpg, foto2.jpg, ... foto26.jpg
+const PHOTO_PREFIX = 'foto';
+const PHOTO_EXT = '.jpg';
+
+// Para VIDEOS: 
+// - Miniaturas: video1-poster.jpg, video2-poster.jpg, video3-poster.jpg
+// - Videos reales: video1.mp4, video2.mp4, video3.mp4
+const VIDEO_PREFIX = 'video';
+const VIDEO_POSTER_EXT = '-poster.jpg';
+const VIDEO_EXT = '.mp4';
+
+// Índices donde van los videos en la galería (intercalados)
+const VIDEO_POSITIONS = [7, 16, 25]; // Ajustados para 26 fotos
+
+/* ============================
+     CONTADOR DE DÍAS
+     ============================ */
+const daysCountEl = document.getElementById('daysCount');
+const startDateEl = document.getElementById('startDate');
+
+function parseDate(dateStr) {
+  const [day, month, year] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function calculateDays() {
+  const startDate = parseDate(START_DATE);
+  if (isNaN(startDate.getTime())) return 0;
+  
+  const today = new Date();
+  startDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  
+  const diffTime = today - startDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(diffDays, 0);
+}
+
+function updateDaysCounter() {
+  const days = calculateDays();
+  daysCountEl.textContent = days.toLocaleString('es-ES');
+  startDateEl.textContent = START_DATE;
+}
+
+function scheduleMidnightUpdate() {
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 1);
+  const timeUntilMidnight = midnight - now;
+  
+  setTimeout(() => {
+    updateDaysCounter();
+    scheduleMidnightUpdate();
+  }, timeUntilMidnight);
+}
+
+// Inicializar contador
+updateDaysCounter();
+scheduleMidnightUpdate();
+
+/* ============================
+     PARTÍCULAS DE CORAZONES
+     ============================ */
+const canvas = document.getElementById('heartsCanvas');
+const ctx = canvas.getContext('2d');
+let canvasWidth = canvas.width = window.innerWidth;
+let canvasHeight = canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvasWidth = canvas.width = window.innerWidth;
+  canvasHeight = canvas.height = window.innerHeight;
+});
+
+class HeartParticle {
+  constructor() {
+    this.reset();
+  }
+  
+  reset() {
+    this.x = Math.random() * canvasWidth;
+    this.y = canvasHeight + Math.random() * 200;
+    this.speedY = 0.6 + Math.random() * 1.1;
+    this.speedX = (Math.random() - 0.5) * 0.6;
+    this.size = 6 + Math.random() * 14;
+    this.opacity = 0.4 + Math.random() * 0.7;
+    this.angle = Math.random() * Math.PI * 2;
+    this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+    this.colorHue = 320 + Math.random() * 40;
+  }
+  
+  update() {
+    this.y -= this.speedY;
+    this.x += this.speedX + Math.sin(this.angle) * 0.3;
+    this.angle += this.rotationSpeed;
+    
+    if (this.y < -80) this.reset();
+  }
+  
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.globalAlpha = this.opacity;
+    
+    const size = this.size;
+    ctx.fillStyle = `hsla(${this.colorHue}, 80%, 60%, 1)`;
+    
+    // Dibujar corazón
+    ctx.beginPath();
+    ctx.moveTo(0, -size / 2);
+    ctx.bezierCurveTo(-size, -size / 1.5, -size, size / 3, 0, size);
+    ctx.bezierCurveTo(size, size / 3, size, -size / 1.5, 0, -size / 2);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.restore();
+  }
+}
+
+const hearts = Array.from({ length: 24 }, () => new HeartParticle());
+
+function animateHearts() {
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+  hearts.forEach(heart => {
+    heart.update();
+    heart.draw();
+  });
+  
+  requestAnimationFrame(animateHearts);
+}
+
+// Controlar animación cuando la pestaña no está visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    animateHearts();
+  }
+});
+
+animateHearts();
+
+/* ============================
+     GALERÍA DINÁMICA
+     ============================ */
+const galleryEl = document.getElementById('gallery');
+const mediaItems = [];
+
+// Crear array de medios intercalando fotos y videos
+let currentIndex = 0;
+let photoCounter = 1;
+let videoCounter = 1;
+
+// Crear 26 fotos y 3 videos intercalados
+for (let i = 1; i <= PHOTO_COUNT; i++) {
+  // Agregar foto
+  mediaItems.push({
+    type: 'image',
+    thumbnail: `${IMG_PATH}${PHOTO_PREFIX}${photoCounter}${PHOTO_EXT}`,
+    src: `${IMG_PATH}${PHOTO_PREFIX}${photoCounter}${PHOTO_EXT}`,
+    alt: `Foto ${photoCounter}`,
+    caption: `Foto ${photoCounter}`
+  });
+  photoCounter++;
+  currentIndex++;
+  
+  // Verificar si es momento de agregar un video
+  if (VIDEO_POSITIONS.includes(currentIndex) && videoCounter <= VIDEO_COUNT) {
+    mediaItems.push({
+      type: 'video',
+      thumbnail: `${IMG_PATH}${VIDEO_PREFIX}${videoCounter}${VIDEO_POSTER_EXT}`,
+      src: `${IMG_PATH}${VIDEO_PREFIX}${videoCounter}${VIDEO_EXT}`,
+      alt: `Video ${videoCounter}`,
+      caption: `Video ${videoCounter}`
+    });
+    videoCounter++;
+    currentIndex++;
+  }
+}
+
+// Si quedan videos por agregar (por si acaso)
+while (videoCounter <= VIDEO_COUNT) {
+  mediaItems.push({
+    type: 'video',
+    thumbnail: `${IMG_PATH}${VIDEO_PREFIX}${videoCounter}${VIDEO_POSTER_EXT}`,
+    src: `${IMG_PATH}${VIDEO_PREFIX}${videoCounter}${VIDEO_EXT}`,
+    alt: `Video ${videoCounter}`,
+    caption: `Video ${videoCounter}`
+  });
+  videoCounter++;
+}
+
+// Crear elementos de la galería
+function createGalleryItem(item, index) {
+  const container = document.createElement('div');
+  container.className = `media-tile ${item.type}`;
+  container.dataset.index = index;
+  container.tabIndex = 0;
+  container.role = 'button';
+  container.ariaLabel = `${item.type === 'video' ? 'Video' : 'Foto'} ${index + 1}`;
+  
+  // Rotación aleatoria para efecto polaroid
+  const rotation = (Math.random() * 6 - 3).toFixed(1);
+  container.style.transform = `rotate(${rotation}deg)`;
+  
+  const img = document.createElement('img');
+  img.src = item.thumbnail;
+  img.alt = item.alt;
+  img.loading = index < 8 ? 'eager' : 'lazy';
+  img.decoding = 'async';
+  
+  // Manejar error de carga de imagen
+  img.onerror = function() {
+    console.warn(`No se pudo cargar: ${item.thumbnail}`);
+    // Placeholder diferente para videos
+    if (item.type === 'video') {
+      this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIHJ4PSIxNCIgZmlsbD0iI2ZmNmI4MSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5WSURFTzwvdGV4dD48L3N2Zz4=';
+    } else {
+      this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIHJ4PSIxNCIgZmlsbD0iI2ZmZjAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2VuIG5vIGVuY29udHJhZGE8L3RleHQ+PC9zdmc+';
+    }
+  };
+  
+  container.appendChild(img);
+  return container;
+}
+
+
+
+// Renderizar galería
+function renderGallery() {
+  galleryEl.innerHTML = '';
+  
+  mediaItems.forEach((item, index) => {
+    const tile = createGalleryItem(item, index);
+    
+    // Event listeners
+    tile.addEventListener('click', () => openLightbox(index));
+    tile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openLightbox(index);
+      }
+    });
+    
+    galleryEl.appendChild(tile);
+  });
+  
+}
+
+/* ============================
+     LIGHTBOX / MODAL
+     ============================ */
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modalImg');
+const modalVideo = document.getElementById('modalVideo');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const closeBtn = document.getElementById('closeModal');
+const metaCaption = document.getElementById('metaCaption');
+const indexLabel = document.getElementById('indexLabel');
+
+let currentLightboxIndex = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+
+function openLightbox(index) {
+  if (index < 0 || index >= mediaItems.length) return;
+  
+  currentLightboxIndex = index;
+  const item = mediaItems[index];
+  
+  // Ocultar todos los medios primero
+  modalImg.style.display = 'none';
+  modalVideo.style.display = 'none';
+  
+  if (item.type === 'image') {
+    // Mostrar imagen
+    modalImg.src = item.src;
+    modalImg.alt = item.alt;
+    modalImg.style.display = 'block';
+    
+    // Pausar video si está reproduciéndose
+    if (!modalVideo.paused) {
+      modalVideo.pause();
+    }
+  } else {
+    // Mostrar video
+    modalVideo.src = item.src;
+    modalVideo.setAttribute('aria-label', item.alt);
+    modalVideo.style.display = 'block';
+    
+    // Intentar reproducir automáticamente
+    const playPromise = modalVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay bloqueado, mostrar controles
+        modalVideo.controls = true;
+      });
+    }
+  }
+  
+  // Actualizar metadata
+  metaCaption.textContent = item.caption;
+  indexLabel.textContent = `${index + 1}/${mediaItems.length}`;
+  
+  // Mostrar modal
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  
+  // Enfocar el modal para navegación por teclado
+  closeBtn.focus();
+}
+
+function closeLightbox() {
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  
+  // Pausar video al cerrar
+  if (!modalVideo.paused) {
+    modalVideo.pause();
+  }
+  
+  // Limpiar src del video para liberar memoria
+  modalVideo.src = '';
+  modalVideo.controls = false;
+}
+
+function navigateMedia(direction) {
+  // Pausar video actual si está reproduciéndose
+  if (!modalVideo.paused) {
+    modalVideo.pause();
+  }
+  
+  // Calcular nuevo índice
+  currentLightboxIndex = (currentLightboxIndex + direction + mediaItems.length) % mediaItems.length;
+  openLightbox(currentLightboxIndex);
+}
+
+// Event Listeners para navegación
+prevBtn.addEventListener('click', () => navigateMedia(-1));
+nextBtn.addEventListener('click', () => navigateMedia(1));
+closeBtn.addEventListener('click', closeLightbox);
+
+// Cerrar al hacer clic fuera del contenido
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    closeLightbox();
+  }
+});
+
+// Navegación por teclado
+document.addEventListener('keydown', (e) => {
+  if (!modal.classList.contains('open')) return;
+  
+  switch (e.key) {
+    case 'Escape':
+      closeLightbox();
+      break;
+    case 'ArrowLeft':
+      navigateMedia(-1);
+      break;
+    case 'ArrowRight':
+      navigateMedia(1);
+      break;
+  }
+});
+
+// Soporte para touch (swipe)
+modal.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }
+}, { passive: true });
+
+modal.addEventListener('touchend', (e) => {
+  if (e.changedTouches.length !== 1) return;
+  
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+  
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  
+  // Solo considerar swipe horizontal si el movimiento vertical es menor
+  if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      navigateMedia(-1); // Swipe derecho -> anterior
+    } else {
+      navigateMedia(1);  // Swipe izquierdo -> siguiente
+    }
+  }
+}, { passive: true });
+
+// Botón "Ver galería"
+document.getElementById('openAllBtn').addEventListener('click', () => openLightbox(0));
+
+/* ============================
+     CONTROL DE MÚSICA
+     ============================ */
+const bgMusic = document.getElementById('bgMusic');
+const toggleMusicBtn = document.getElementById('toggleMusic');
+const heartIco = document.getElementById('heartIco');
+let isMusicPlaying = false;
+
+toggleMusicBtn.addEventListener('click', () => {
+  isMusicPlaying = !isMusicPlaying;
+  toggleMusicBtn.setAttribute('aria-pressed', isMusicPlaying);
+  
+  if (isMusicPlaying) {
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('No se pudo reproducir la música:', error);
+        isMusicPlaying = false;
+        toggleMusicBtn.setAttribute('aria-pressed', 'false');
+      });
+    }
+    heartIco.classList.add('beat');
+  } else {
+    bgMusic.pause();
+    heartIco.classList.remove('beat');
+  }
+});
+
+/* ============================
+     INICIALIZACIÓN
+     ============================ */
+function initialize() {
+  renderGallery();
+  
+  // Precargar primeras imágenes para mejor experiencia
+  const preloadImages = mediaItems.slice(0, 8).filter(item => item.type === 'image');
+  preloadImages.forEach(item => {
+    const img = new Image();
+    img.src = item.src;
+  });
+}
+
+// Iniciar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initialize);
+} else {
+  initialize();
+}
+
+// Manejar error si no hay medios
+if (mediaItems.length === 0) {
+  galleryEl.innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">
+      <p>No se encontraron fotos o videos.</p>
+      <p style="font-size: 0.9rem; margin-top: 10px;">
+        Asegúrate de tener archivos en la carpeta "img/":
+        <br>26 fotos: foto1.jpg ... foto26.jpg
+        <br>3 videos: video1.mp4 ... video3.mp4
+        <br>3 posters: video1-poster.jpg ... video3-poster.jpg
+      </p>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
